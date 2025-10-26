@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ventana de Johari - Admin</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="language-selector">
+                <button class="lang-btn" data-lang="es">🇪🇸 ES</button>
+                <button class="lang-btn" data-lang="fr">🇫🇷 FR</button>
+                <button class="lang-btn" data-lang="en">🇬🇧 EN</button>
+            </div>
+        </header>
+
+        <!-- Login Screen -->
+        <main class="login-screen" id="adminLoginScreen">
+            <h1 data-i18n="admin.login.title">Panel Administrador</h1>
+            
+            <div class="card">
+                <p data-i18n="admin.login.instruction">Ingresa tu código de administrador:</p>
+                <input type="text" id="adminAccessCode" class="code-input" placeholder="Código Admin" data-i18n-placeholder="admin.login.placeholder">
+                <button class="btn-primary" id="adminLoginBtn" data-i18n="admin.login.button">Acceder</button>
+                <p class="error-message hidden" id="adminErrorMessage" data-i18n="admin.login.error">Código inválido</p>
+            </div>
+        </main>
+
+        <!-- Admin Dashboard -->
+        <main class="admin-dashboard hidden" id="adminDashboard">
+            <h1 data-i18n="admin.dashboard.title">Dashboard - Ventana de Johari</h1>
+            
+            <div class="card">
+                <h2 data-i18n="admin.dashboard.progress">Progreso del ejercicio</h2>
+                <div class="progress-summary" id="progressSummary"></div>
+            </div>
+
+            <div class="card">
+                <div class="dashboard-header">
+                    <h2 data-i18n="admin.dashboard.windows">Ventanas de Johari</h2>
+                    <div class="view-controls">
+                        <label>
+                            <input type="checkbox" id="proportionalView" />
+                            <span data-i18n="admin.dashboard.proportional">Vista proporcional</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="windows-grid" id="windowsGrid"></div>
+            </div>
+
+            <div class="card">
+                <h2 data-i18n="admin.dashboard.actions">Acciones</h2>
+                <div class="admin-actions">
+                    <button class="btn-secondary" id="exportData" data-i18n="admin.dashboard.export">Exportar datos (JSON)</button>
+                    <button class="btn-secondary" id="downloadAllWindows" data-i18n="admin.dashboard.downloadAll">Descargar todas las ventanas</button>
+                    <button class="btn-danger" id="resetExercise" data-i18n="admin.dashboard.reset">Reiniciar ejercicio</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/johari.js"></script>
+    <script src="js/canvas.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ventana de Johari - Team Exercise</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="language-selector">
+                <button class="lang-btn" data-lang="es">🇪🇸 ES</button>
+                <button class="lang-btn" data-lang="fr">🇫🇷 FR</button>
+                <button class="lang-btn" data-lang="en">🇬🇧 EN</button>
+            </div>
+        </header>
+
+        <main class="setup-screen" id="setupScreen">
+            <h1 data-i18n="setup.title">Configuración - Ventana de Johari</h1>
+            
+            <div class="card">
+                <h2 data-i18n="setup.participants">Participantes del equipo</h2>
+                <p data-i18n="setup.instruction">Ingresa los nombres de los 9 miembros del equipo:</p>
+                
+                <div class="participants-form">
+                    <input type="text" class="participant-input" placeholder="Nombre participante 1" data-i18n-placeholder="setup.placeholder">
+                    <input type="text" class="participant-input" placeholder="Nombre participante 2" data-i18n-placeholder="setup.placeholder">
+                    <input type="text" class="participant-input" placeholder="Nombre participante 3" data-i18n-placeholder="setup.placeholder">
+                    <input type="text" class="participant-input" placeholder="Nombre participante 4" data-i18n-placeholder="setup.placeholder">
+                    <input type="text" class="participant-input" placeholder="Nombre participante 5" data-i18n-placeholder="setup.placeholder">
+                    <input type="text" class="participant-input" placeholder="Nombre participante 6" data-i18n-placeholder="setup.placeholder">
+                    <input type="text" class="participant-input" placeholder="Nombre participante 7" data-i18n-placeholder="setup.placeholder">
+                    <input type="text" class="participant-input" placeholder="Nombre participante 8" data-i18n-placeholder="setup.placeholder">
+                    <input type="text" class="participant-input" placeholder="Nombre participante 9" data-i18n-placeholder="setup.placeholder">
+                </div>
+
+                <button class="btn-primary" id="generateCodes" data-i18n="setup.generate">Generar códigos de acceso</button>
+            </div>
+        </main>
+
+        <main class="codes-screen hidden" id="codesScreen">
+            <h1 data-i18n="codes.title">Códigos generados</h1>
+            
+            <div class="card">
+                <p data-i18n="codes.instruction">Comparte estos códigos con cada participante:</p>
+                <div id="codesList" class="codes-list"></div>
+                
+                <div class="admin-section">
+                    <h3 data-i18n="codes.admin">Acceso Administrador</h3>
+                    <p data-i18n="codes.adminCode">Tu código de administrador:</p>
+                    <div class="admin-code" id="adminCode"></div>
+                </div>
+
+                <button class="btn-secondary" id="copyAllCodes" data-i18n="codes.copy">Copiar todos los códigos</button>
+            </div>
+
+            <div class="card">
+                <h3 data-i18n="codes.next">Próximos pasos</h3>
+                <ol>
+                    <li data-i18n="codes.step1">Cada participante accede con su código en la página de participante</li>
+                    <li data-i18n="codes.step2">Completan su autoevaluación y evaluaciones de compañeros</li>
+                    <li data-i18n="codes.step3">El administrador puede ver todas las ventanas generadas</li>
+                </ol>
+                
+                <div class="navigation-buttons">
+                    <a href="participante.html" class="btn-primary" data-i18n="codes.participant">Ir a página de participante</a>
+                    <a href="admin.html" class="btn-primary" data-i18n="codes.adminPanel">Ir a panel administrador</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/setup.js"></script>
+</body>
+</html>

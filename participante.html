@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ventana de Johari - Participante</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="language-selector">
+                <button class="lang-btn" data-lang="es">🇪🇸 ES</button>
+                <button class="lang-btn" data-lang="fr">🇫🇷 FR</button>
+                <button class="lang-btn" data-lang="en">🇬🇧 EN</button>
+            </div>
+        </header>
+
+        <!-- Login Screen -->
+        <main class="login-screen" id="loginScreen">
+            <h1 data-i18n="participant.login.title">Acceso Participante</h1>
+            
+            <div class="card">
+                <p data-i18n="participant.login.instruction">Ingresa tu código de acceso:</p>
+                <input type="text" id="accessCode" class="code-input" placeholder="Código" data-i18n-placeholder="participant.login.placeholder">
+                <button class="btn-primary" id="loginBtn" data-i18n="participant.login.button">Entrar</button>
+                <p class="error-message hidden" id="errorMessage" data-i18n="participant.login.error">Código inválido</p>
+            </div>
+        </main>
+
+        <!-- Self-Assessment Screen -->
+        <main class="assessment-screen hidden" id="selfAssessmentScreen">
+            <h1 data-i18n="participant.self.title">Autoevaluación</h1>
+            <p class="welcome-text">
+                <span data-i18n="participant.self.welcome">Bienvenido/a</span>, <strong id="participantName"></strong>
+            </p>
+            
+            <div class="card">
+                <h2 data-i18n="participant.self.instruction">Selecciona 5-6 adjetivos que mejor te describan:</h2>
+                <p class="selection-count"><span data-i18n="participant.self.selected">Seleccionados</span>: <strong id="selfCount">0</strong>/6</p>
+                
+                <div class="adjectives-grid" id="selfAdjectivesGrid"></div>
+                
+                <button class="btn-primary" id="saveSelfAssessment" disabled data-i18n="participant.self.save">Guardar autoevaluación</button>
+            </div>
+        </main>
+
+        <!-- Peer Assessment Screen -->
+        <main class="assessment-screen hidden" id="peerAssessmentScreen">
+            <h1 data-i18n="participant.peer.title">Evaluación de Compañeros</h1>
+            
+            <div class="card">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p class="progress-text">
+                    <span data-i18n="participant.peer.progress">Evaluando</span>: 
+                    <strong id="currentPeerName"></strong> 
+                    (<span id="currentPeerNumber">1</span>/8)
+                </p>
+                
+                <h2 data-i18n="participant.peer.instruction">Selecciona 5-6 adjetivos que describan a esta persona:</h2>
+                <p class="selection-count"><span data-i18n="participant.self.selected">Seleccionados</span>: <strong id="peerCount">0</strong>/6</p>
+                
+                <div class="adjectives-grid" id="peerAdjectivesGrid"></div>
+                
+                <div class="navigation-buttons">
+                    <button class="btn-secondary" id="previousPeer" disabled data-i18n="participant.peer.previous">Anterior</button>
+                    <button class="btn-primary" id="nextPeer" disabled data-i18n="participant.peer.next">Siguiente</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Completion Screen -->
+        <main class="completion-screen hidden" id="completionScreen">
+            <h1 data-i18n="participant.complete.title">¡Evaluación Completada!</h1>
+            
+            <div class="card">
+                <div class="success-icon">✓</div>
+                <p data-i18n="participant.complete.message">Has completado todas las evaluaciones. Tu Ventana de Johari se generará cuando todos los participantes terminen.</p>
+                
+                <div class="result-preview">
+                    <h3 data-i18n="participant.complete.preview">Vista previa de tu ventana:</h3>
+                    <canvas id="previewCanvas" width="600" height="600"></canvas>
+                    <button class="btn-secondary" id="downloadPreview" data-i18n="participant.complete.download">Descargar mi ventana</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/johari.js"></script>
+    <script src="js/canvas.js"></script>
+    <script src="js/participante.js"></script>
+</body>
+</html>
