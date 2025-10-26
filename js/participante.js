@@ -20,9 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Enter') handleLogin();
     });
     
-    function handleLogin() {
+    async function handleLogin() {
         const code = accessCodeInput.value.trim().toUpperCase();
-        const participant = JohariData.getParticipantByCode(code);
+        const participant = await JohariData.getParticipantByCode(code);
         
         if (!participant) {
             errorMessage.classList.remove('hidden');
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Verificar si ya completó todo
         if (participant.completed) {
-            showCompletionScreen();
+            await showCompletionScreen();
             return;
         }
         
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (participant.selfAssessment.length === 0) {
             showSelfAssessment();
         } else {
-            showPeerAssessment();
+            await showPeerAssessment();
         }
     }
     
@@ -65,18 +65,18 @@ document.addEventListener('DOMContentLoaded', () => {
             saveBtn.disabled = adjectives.length < 5 || adjectives.length > 6;
         });
         
-        saveBtn.addEventListener('click', () => {
-            JohariData.saveSelfAssessment(currentParticipant.code, selectedAdjectives);
-            showPeerAssessment();
+        saveBtn.addEventListener('click', async () => {
+            await JohariData.saveSelfAssessment(currentParticipant.code, selectedAdjectives);
+            await showPeerAssessment();
         });
     }
     
     // EVALUACIÓN DE COMPAÑEROS
-    function showPeerAssessment() {
+    async function showPeerAssessment() {
         selfAssessmentScreen.classList.add('hidden');
         peerAssessmentScreen.classList.remove('hidden');
         
-        const session = JohariData.getSession();
+        const session = await JohariData.getSession();
         otherParticipants = session.participants.filter(
             p => p.code !== currentParticipant.code
         );
@@ -121,8 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         prevBtn.disabled = currentPeerIndex === 0;
-        prevBtn.onclick = () => {
-            JohariData.savePeerAssessment(
+        prevBtn.onclick = async () => {
+            await JohariData.savePeerAssessment(
                 currentParticipant.code, 
                 currentPeer.code, 
                 selectedAdjectives
@@ -131,8 +131,8 @@ document.addEventListener('DOMContentLoaded', () => {
             showCurrentPeer();
         };
         
-        nextBtn.onclick = () => {
-            JohariData.savePeerAssessment(
+        nextBtn.onclick = async () => {
+            await JohariData.savePeerAssessment(
                 currentParticipant.code, 
                 currentPeer.code, 
                 selectedAdjectives
@@ -143,37 +143,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 showCurrentPeer();
             } else {
                 // Actualizar participante como completado
-                const session = JohariData.getSession();
+                const session = await JohariData.getSession();
                 const participant = session.participants.find(
                     p => p.code === currentParticipant.code
                 );
                 participant.completed = true;
-                JohariData.saveSession(session);
+                await JohariData.saveSession(session);
                 
-                showCompletionScreen();
+                await showCompletionScreen();
             }
         };
     }
     
     // PANTALLA DE COMPLETADO
-    function showCompletionScreen() {
+    async function showCompletionScreen() {
         loginScreen.classList.add('hidden');
         selfAssessmentScreen.classList.add('hidden');
         peerAssessmentScreen.classList.add('hidden');
         completionScreen.classList.remove('hidden');
         
-        renderPreviewWindow();
+        await renderPreviewWindow();
         
         const downloadBtn = document.getElementById('downloadPreview');
-        downloadBtn.addEventListener('click', () => {
-            JohariCanvas.downloadWindow(currentParticipant.code, false);
+        downloadBtn.addEventListener('click', async () => {
+            await JohariCanvas.downloadWindow(currentParticipant.code, false);
         });
     }
     
     // Renderizar preview de la ventana
-    function renderPreviewWindow() {
+    async function renderPreviewWindow() {
         const canvas = document.getElementById('previewCanvas');
-        const windowData = JohariWindow.calculate(currentParticipant.code);
+        const windowData = await JohariWindow.calculate(currentParticipant.code);
         
         if (windowData && canvas) {
             JohariCanvas.drawClassic(canvas, windowData);
@@ -181,9 +181,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Listener para cambio de idioma
-    window.addEventListener('languageChanged', () => {
+    window.addEventListener('languageChanged', async () => {
         if (!completionScreen.classList.contains('hidden')) {
-            renderPreviewWindow();
+            await renderPreviewWindow();
         }
     });
     

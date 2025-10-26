@@ -1,17 +1,18 @@
 // Lógica para la página de configuración inicial (index.html)
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const setupScreen = document.getElementById('setupScreen');
     const codesScreen = document.getElementById('codesScreen');
     const generateBtn = document.getElementById('generateCodes');
     const copyAllBtn = document.getElementById('copyAllCodes');
     const addParticipantBtn = document.getElementById('addParticipantBtn');
     const participantsForm = document.getElementById('participantsForm');
+    const resetBtn = document.getElementById('resetBtn');
     
     let participantCounter = 0;
     
     // Verificar si ya existe una sesión
-    const existingSession = JohariData.getSession();
+    const existingSession = await JohariData.getSession();
     if (existingSession) {
         displayCodes(existingSession);
         return;
@@ -30,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         inputWrapper.className = 'participant-input-wrapper';
         inputWrapper.innerHTML = `
             <input type="text" class="participant-input" 
-                   placeholder="${i18n.t('setup.placeholder') || 'Nombre participante'}" 
+                   placeholder="${i18n.t('setup.placeholder') || 'Participant name'}" 
                    data-participant-id="${participantCounter}">
             <button type="button" class="btn-remove-participant" data-participant-id="${participantCounter}">✕</button>
         `;
@@ -49,31 +50,40 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Generar códigos
-    generateBtn.addEventListener('click', () => {
+    generateBtn.addEventListener('click', async () => {
         const inputs = document.querySelectorAll('.participant-input');
         const names = Array.from(inputs)
             .map(input => input.value.trim())
             .filter(name => name !== '');
         
         if (names.length < 2) {
-            alert(i18n.t('setup.errorMinParticipants') || 'Debe haber al menos 2 participantes');
+            alert(i18n.t('setup.errorMinParticipants') || 'There must be at least 2 participants');
             return;
         }
         
         // Verificar nombres únicos
         const uniqueNames = new Set(names);
         if (uniqueNames.size !== names.length) {
-            alert(i18n.t('setup.errorDuplicate') || 'Los nombres deben ser únicos');
+            alert(i18n.t('setup.errorDuplicate') || 'Names must be unique');
             return;
         }
         
         // Crear sesión
-        const session = JohariData.createSession(names);
+        generateBtn.disabled = true;
+        generateBtn.textContent = 'Generating...';
+        const session = await JohariData.createSession(names);
         displayCodes(session);
+        generateBtn.disabled = false;
+        generateBtn.textContent = i18n.t('setup.generate') || 'Generate access codes';
     });
     
     // Mostrar códigos generados
     function displayCodes(session) {
+        if (!session || !session.participants || !Array.isArray(session.participants)) {
+            console.error('Invalid session in displayCodes:', session);
+            return;
+        }
+        
         setupScreen.classList.add('hidden');
         codesScreen.classList.remove('hidden');
         
@@ -81,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const adminCode = document.getElementById('adminCode');
         
         // Mostrar código de admin
-        adminCode.textContent = session.adminCode;
+        adminCode.textContent = session.adminCode || '';
         
         // Mostrar códigos de participantes
         codesList.innerHTML = '';
@@ -94,23 +104,35 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             codesList.appendChild(codeItem);
         });
+        
+        // Configurar botón de reset si existe y no está configurado
+        if (resetBtn && !resetBtn.dataset.configured) {
+            resetBtn.style.display = 'inline-block';
+            resetBtn.dataset.configured = 'true';
+            resetBtn.addEventListener('click', async () => {
+                if (confirm(i18n.t('setup.confirmNew') || 'Start a new session? This will clear the current session.')) {
+                    await JohariData.resetSession();
+                    window.location.reload();
+                }
+            });
+        }
     }
     
     // Copiar todos los códigos
-    copyAllBtn.addEventListener('click', () => {
-        const session = JohariData.getSession();
+    copyAllBtn.addEventListener('click', async () => {
+        const session = await JohariData.getSession();
         if (!session) return;
         
-        let text = 'VENTANA DE JOHARI - CÓDIGOS DE ACCESO\n\n';
-        text += 'PARTICIPANTES:\n';
+        let text = 'JOHARI WINDOW - ACCESS CODES\n\n';
+        text += 'PARTICIPANTS:\n';
         session.participants.forEach(p => {
             text += `${p.name}: ${p.code}\n`;
         });
-        text += `\nADMINISTRADOR: ${session.adminCode}\n`;
+        text += `\nADMINISTRATOR: ${session.adminCode}\n`;
         
         navigator.clipboard.writeText(text).then(() => {
             const originalText = copyAllBtn.textContent;
-            copyAllBtn.textContent = '✓ ' + (i18n.t('codes.copied') || 'Copiado');
+            copyAllBtn.textContent = '✓ ' + (i18n.t('codes.copied') || 'Copied');
             setTimeout(() => {
                 copyAllBtn.textContent = originalText;
             }, 2000);

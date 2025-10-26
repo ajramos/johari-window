@@ -199,9 +199,9 @@ const JohariCanvas = {
         });
     },
     
-    // Crear canvas para un participante
-    createWindowCanvas(participantCode, proportional = false) {
-        const windowData = JohariWindow.calculate(participantCode);
+    // Crear canvas para un participante (async)
+    async createWindowCanvas(participantCode, proportional = false) {
+        const windowData = await JohariWindow.calculate(participantCode);
         if (!windowData) return null;
         
         const canvas = document.createElement('canvas');
@@ -217,30 +217,29 @@ const JohariCanvas = {
         return canvas;
     },
     
-    // Descargar ventana de un participante
-    downloadWindow(participantCode, proportional = false) {
-        const session = JohariData.getSession();
+    // Descargar ventana de un participante (async)
+    async downloadWindow(participantCode, proportional = false) {
+        const session = await JohariData.getSession();
         const participant = session.participants.find(p => p.code === participantCode);
         if (!participant) return;
         
-        const canvas = this.createWindowCanvas(participantCode, proportional);
+        const canvas = await this.createWindowCanvas(participantCode, proportional);
         if (!canvas) return;
         
         const filename = `johari-${participant.name.replace(/\s+/g, '-').toLowerCase()}.png`;
         this.downloadCanvas(canvas, filename);
     },
     
-    // Descargar todas las ventanas
-    downloadAllWindows(proportional = false) {
-        const session = JohariData.getSession();
+    // Descargar todas las ventanas (async)
+    async downloadAllWindows(proportional = false) {
+        const session = await JohariData.getSession();
         if (!session) return;
         
-        session.participants
-            .filter(p => p.completed)
-            .forEach((p, index) => {
-                setTimeout(() => {
-                    this.downloadWindow(p.code, proportional);
-                }, index * 500); // Delay para evitar problemas con descargas múltiples
-            });
+        for (let index = 0; index < session.participants.filter(p => p.completed).length; index++) {
+            const p = session.participants.filter(p => p.completed)[index];
+            setTimeout(async () => {
+                await this.downloadWindow(p.code, proportional);
+            }, index * 500);
+        }
     }
 };

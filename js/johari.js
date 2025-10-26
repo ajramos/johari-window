@@ -1,9 +1,9 @@
 // Algoritmo para calcular la Ventana de Johari
 
 const JohariWindow = {
-    // Calcular la ventana de Johari para un participante
-    calculate(participantCode) {
-        const session = JohariData.getSession();
+    // Calcular la ventana de Johari para un participante (async)
+    async calculate(participantCode) {
+        const session = await JohariData.getSession();
         if (!session) return null;
         
         const participant = session.participants.find(p => p.code === participantCode);
@@ -25,8 +25,8 @@ const JohariWindow = {
             return -1;
         }).filter(idx => idx !== -1);
         
-        // Obtener evaluaciones de compañeros y convertir a índices
-        const rawPeerAdjectives = JohariData.getPeerAssessmentsFor(participantCode);
+        // Obtener evaluaciones de compañeros y convertir a índices (async)
+        const rawPeerAdjectives = await JohariData.getPeerAssessmentsFor(participantCode);
         const peerIndices = rawPeerAdjectives.map(adj => {
             for (let lang of ['es', 'fr', 'en']) {
                 const index = JohariData.adjectives[lang].indexOf(adj);
@@ -65,30 +65,34 @@ const JohariWindow = {
         };
     },
     
-    // Calcular ventanas para todos los participantes
-    calculateAll() {
-        const session = JohariData.getSession();
+    // Calcular ventanas para todos los participantes (async)
+    async calculateAll() {
+        const session = await JohariData.getSession();
         if (!session) return [];
         
-        return session.participants
-            .filter(p => p.completed)
-            .map(p => ({
-                code: p.code,
-                window: this.calculate(p.code)
-            }));
+        const windows = await Promise.all(
+            session.participants
+                .filter(p => p.completed)
+                .map(async p => ({
+                    code: p.code,
+                    window: await this.calculate(p.code)
+                }))
+        );
+        
+        return windows.filter(w => w.window !== null);
     },
     
-    // Verificar si todos los participantes han completado
-    allCompleted() {
-        const session = JohariData.getSession();
+    // Verificar si todos los participantes han completado (async)
+    async allCompleted() {
+        const session = await JohariData.getSession();
         if (!session) return false;
         
         return session.participants.every(p => p.completed);
     },
     
-    // Obtener estadísticas de progreso
-    getProgress() {
-        const session = JohariData.getSession();
+    // Obtener estadísticas de progreso (async)
+    async getProgress() {
+        const session = await JohariData.getSession();
         if (!session) return null;
         
         const total = session.participants.length;
@@ -109,7 +113,7 @@ const JohariWindow = {
     // Formatear adjetivos para mostrar en lista
     formatAdjectivesList(adjectives, maxDisplay = 10) {
         if (adjectives.length === 0) {
-            return i18n.t('johari.none') || 'Ninguno';
+            return i18n.t('johari.none') || 'None';
         }
         
         if (adjectives.length <= maxDisplay) {
@@ -118,16 +122,16 @@ const JohariWindow = {
         
         const displayed = adjectives.slice(0, maxDisplay);
         const remaining = adjectives.length - maxDisplay;
-        return `${displayed.join(', ')} (+${remaining} más)`;
+        return `${displayed.join(', ')} (+${remaining} more)`;
     },
     
     // Obtener color para cada área
     getAreaColor(area) {
         const colors = {
-            open: '#10b981',      // Verde
-            blind: '#f59e0b',     // Naranja
-            hidden: '#3b82f6',    // Azul
-            unknown: '#94a3b8'    // Gris
+            open: '#059669',      // Verde
+            blind: '#d97706',     // Naranja
+            hidden: '#2563eb',    // Azul
+            unknown: '#64748b'    // Gris
         };
         return colors[area] || '#000000';
     },

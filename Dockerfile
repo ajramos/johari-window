@@ -1,16 +1,36 @@
-# Usar imagen nginx ligera
+# Build backend
+FROM node:18-alpine AS backend
+WORKDIR /app
+COPY server/package*.json ./
+COPY server/server.js ./
+RUN npm install --production
+
+# Final image with nginx + backend
 FROM nginx:alpine
 
-# Copiar todos los archivos al directorio de nginx
-COPY . /usr/share/nginx/html
+# Install Node.js in final image
+RUN apk add --no-cache nodejs npm
 
-# Exponer puerto 8080 (requerido por Cloud Run)
-EXPOSE 8080
+# Copy backend from build stage
+COPY --from=backend /app /app/backend
 
-# Crear configuración personalizada de nginx para usar puerto 8080
+# Copy frontend files
+COPY index.html participant.html admin.html /usr/share/nginx/html/
+COPY css/ /usr/share/nginx/html/css/
+COPY js/ /usr/share/nginx/html/js/
+COPY favicon.svg /usr/share/nginx/html/
+
+# Create nginx config that proxies API to backend
 RUN echo 'server { \
     listen 8080; \
     server_name localhost; \
+    \
+    location /api/ { \
+        proxy_pass http://127.0.0.1:3000; \
+        proxy_set_header Host $host; \
+        proxy_set_header X-Real-IP $remote_addr; \
+    } \
+    \
     location / { \
         root /usr/share/nginx/html; \
         index index.html; \
@@ -18,5 +38,10 @@ RUN echo 'server { \
     } \
 }' > /etc/nginx/conf.d/default.conf
 
-# Iniciar nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Copy start script
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
+EXPOSE 8080
+
+CMD ["/start.sh"]

@@ -13,7 +13,9 @@ const i18n = {
                 generate: 'Generar códigos de acceso',
                 addParticipant: '+ Añadir participante',
                 errorMinParticipants: 'Debe haber al menos 2 participantes',
-                errorDuplicate: 'Los nombres deben ser únicos'
+                errorDuplicate: 'Los nombres deben ser únicos',
+                newSession: 'Nueva Sesión',
+                confirmNew: '¿Iniciar una nueva sesión? Esto borrará la sesión actual.'
             },
             codes: {
                 title: 'Códigos generados',
@@ -99,7 +101,9 @@ const i18n = {
                 generate: 'Générer les codes d\'accès',
                 addParticipant: '+ Ajouter un participant',
                 errorMinParticipants: 'Il doit y avoir au moins 2 participants',
-                errorDuplicate: 'Les noms doivent être uniques'
+                errorDuplicate: 'Les noms doivent être uniques',
+                newSession: 'Nouvelle Session',
+                confirmNew: 'Démarrer une nouvelle session? Cela effacera la session actuelle.'
             },
             codes: {
                 title: 'Codes générés',
@@ -185,7 +189,9 @@ const i18n = {
                 generate: 'Generate access codes',
                 addParticipant: '+ Add participant',
                 errorMinParticipants: 'There must be at least 2 participants',
-                errorDuplicate: 'Names must be unique'
+                errorDuplicate: 'Names must be unique',
+                newSession: 'New Session',
+                confirmNew: 'Start a new session? This will clear the current session.'
             },
             codes: {
                 title: 'Generated Codes',

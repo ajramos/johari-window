@@ -37,7 +37,10 @@
         </main>
 
         <main class="codes-screen hidden" id="codesScreen">
-            <h1 data-i18n="codes.title">Códigos generados</h1>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h1 data-i18n="codes.title" style="margin: 0;">Códigos generados</h1>
+                <button class="btn-secondary" id="resetBtn" data-i18n="setup.newSession">Nueva Sesión</button>
+            </div>
             
             <div class="card">
                 <p data-i18n="codes.instruction">Comparte estos códigos con cada participante:</p>
@@ -68,6 +71,10 @@
         </main>
     </div>
 
+    <script>
+        // API Base URL - set via environment variable or default to localhost
+        window.API_BASE_URL = window.API_BASE_URL || '';
+    </script>
     <script src="js/i18n.js"></script>
     <script src="js/data.js"></script>
     <script src="js/setup.js"></script>

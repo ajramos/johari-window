@@ -1,6 +1,9 @@
-// Datos de la Ventana de Johari y funciones de almacenamiento
+// Datos de la Ventana de Johari y funciones de almacenamiento con API Backend
 
 const JohariData = {
+    // Base URL for API (will be set via environment or default to Cloud Run URL)
+    apiBaseUrl: window.API_BASE_URL || '',
+    
     // Los 56 adjetivos clásicos de la Ventana de Johari
     adjectives: {
         es: [
@@ -51,9 +54,36 @@ const JohariData = {
         return this.adjectives[lang] ? this.adjectives[lang].indexOf(text) : this.adjectives.es.indexOf(text);
     },
     
+    // API helper
+    async apiCall(endpoint, options = {}) {
+        if (this.apiBaseUrl === undefined || this.apiBaseUrl === null) {
+            // Fallback to LocalStorage if no API configured
+            return null;
+        }
+        
+        try {
+            const response = await fetch(`${this.apiBaseUrl}${endpoint}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                },
+                ...options
+            });
+            
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('API call failed:', error);
+            throw error;
+        }
+    },
+    
     // Generar código único de 6 caracteres
     generateCode() {
-        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Sin caracteres confusos
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
         let code = '';
         for (let i = 0; i < 6; i++) {
             code += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -61,85 +91,126 @@ const JohariData = {
         return code;
     },
     
-    // Verificar si un código ya existe
-    codeExists(code) {
-        const session = this.getSession();
+    // Verificar si un código ya existe (async)
+    async codeExists(code) {
+        const session = await this.getSession();
         if (!session) return false;
         
         return session.participants.some(p => p.code === code) || 
                session.adminCode === code;
     },
     
-    // Generar código único
-    generateUniqueCode() {
+    // Generar código único (async)
+    async generateUniqueCode() {
         let code;
+        let attempts = 0;
         do {
             code = this.generateCode();
-        } while (this.codeExists(code));
+            attempts++;
+        } while (await this.codeExists(code) && attempts < 1000);
         return code;
     },
     
-    // Crear nueva sesión
-    createSession(participantNames) {
-        const participants = participantNames.map(name => ({
+    // Crear nueva sesión (async)
+    async createSession(participantNames) {
+        const participants = participantNames.map(async name => ({
             name: name,
-            code: this.generateUniqueCode(),
+            code: await this.generateUniqueCode(),
             selfAssessment: [],
             peerAssessments: {},
             completed: false
         }));
         
+        const participantsArray = await Promise.all(participants);
         const session = {
-            adminCode: this.generateUniqueCode(),
-            participants: participants,
+            adminCode: await this.generateUniqueCode(),
+            participants: participantsArray,
             createdAt: new Date().toISOString()
         };
         
-        localStorage.setItem('johari_session', JSON.stringify(session));
+        await this.saveSession(session);
         return session;
     },
     
-    // Obtener sesión actual
-    getSession() {
+    // Obtener sesión actual (async)
+    async getSession() {
+        // Always try API first (apiBaseUrl empty string means use relative URLs)
+        if (this.apiBaseUrl !== undefined && this.apiBaseUrl !== null) {
+            try {
+                const session = await this.apiCall('/api/session');
+                // Validate session structure
+                if (session && session.participants && Array.isArray(session.participants)) {
+                    return session;
+                } else if (session) {
+                    console.warn('Invalid session structure:', session);
+                    return null;
+                }
+                return null;
+            } catch (error) {
+                console.warn('API failed, using LocalStorage:', error);
+                const data = localStorage.getItem('johari_session');
+                return data ? JSON.parse(data) : null;
+            }
+        }
+        
+        // Fallback to LocalStorage
         const data = localStorage.getItem('johari_session');
         return data ? JSON.parse(data) : null;
     },
     
-    // Guardar sesión
-    saveSession(session) {
+    // Guardar sesión (async)
+    async saveSession(session) {
+        if (this.apiBaseUrl !== undefined && this.apiBaseUrl !== null) {
+            try {
+                await this.apiCall('/api/session', {
+                    method: 'POST',
+                    body: JSON.stringify(session)
+                });
+                return;
+            } catch (error) {
+                console.warn('API failed, using LocalStorage:', error);
+                localStorage.setItem('johari_session', JSON.stringify(session));
+                return;
+            }
+        }
+        
+        // Fallback to LocalStorage
         localStorage.setItem('johari_session', JSON.stringify(session));
     },
     
-    // Obtener participante por código
-    getParticipantByCode(code) {
-        const session = this.getSession();
-        if (!session) return null;
+    // Obtener participante por código (async)
+    async getParticipantByCode(code) {
+        const session = await this.getSession();
+        if (!session || !session.participants || !Array.isArray(session.participants)) {
+            console.error('Invalid session or participants not found:', session);
+            return null;
+        }
         
         return session.participants.find(p => p.code === code);
     },
     
-    // Verificar código de admin
-    isAdminCode(code) {
-        const session = this.getSession();
+    // Verificar código de admin (async)
+    async isAdminCode(code) {
+        const session = await this.getSession();
         return session && session.adminCode === code;
     },
     
-    // Guardar autoevaluación
-    saveSelfAssessment(code, adjectives) {
-        const session = this.getSession();
+    // Guardar autoevaluación (async)
+    async saveSelfAssessment(code, adjectives) {
+        const session = await this.getSession();
         if (!session) return false;
         
         const participant = session.participants.find(p => p.code === code);
         if (!participant) return false;
         
         participant.selfAssessment = adjectives;
-        this.saveSession(session);
+        await this.saveSession(session);
         return true;
     },
     
-    // Guardar evaluación de compañero
-    savePeerAssessment(evaluatorCode, evaluatedCode, adjectives) {
-        const session = this.getSession();
+    // Guardar evaluación de compañero (async)
+    async savePeerAssessment(evaluatorCode, evaluatedCode, adjectives) {
+        const session = await this.getSession();
         if (!session) return false;
         
         const evaluator = session.participants.find(p => p.code === evaluatorCode);
@@ -154,13 +225,13 @@ const JohariData = {
             evaluator.peerAssessments[p.code].length > 0
         ) && evaluator.selfAssessment.length > 0;
         
-        this.saveSession(session);
+        await this.saveSession(session);
         return true;
     },
     
-    // Obtener evaluaciones de compañeros para un participante
-    getPeerAssessmentsFor(participantCode) {
-        const session = this.getSession();
+    // Obtener evaluaciones de compañeros para un participante (async)
+    async getPeerAssessmentsFor(participantCode) {
+        const session = await this.getSession();
         if (!session) return [];
         
         const assessments = [];
@@ -173,9 +244,9 @@ const JohariData = {
         return assessments;
     },
     
-    // Exportar datos de la sesión
-    exportSession() {
-        const session = this.getSession();
+    // Exportar datos de la sesión (async)
+    async exportSession() {
+        const session = await this.getSession();
         if (!session) return null;
         
         const blob = new Blob([JSON.stringify(session, null, 2)], { 
@@ -189,9 +260,16 @@ const JohariData = {
         URL.revokeObjectURL(url);
     },
     
-    // Reiniciar sesión
-    resetSession() {
-        if (confirm('¿Estás seguro de que quieres reiniciar el ejercicio? Se perderán todos los datos.')) {
+    // Reiniciar sesión (async)
+    async resetSession() {
+        if (confirm('Are you sure you want to reset the exercise? All data will be lost.')) {
+            if (this.apiBaseUrl !== undefined && this.apiBaseUrl !== null) {
+                try {
+                    await this.apiCall('/api/session', { method: 'DELETE' });
+                } catch (error) {
+                    console.warn('API failed:', error);
+                }
+            }
             localStorage.removeItem('johari_session');
             window.location.href = 'index.html';
         }
