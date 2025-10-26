@@ -74,11 +74,27 @@
 
         <!-- Completion Screen -->
         <main class="completion-screen hidden" id="completionScreen">
-            <h1 data-i18n="participant.complete.title">¡Evaluación Completada!</h1>
+            <div class="completion-header">
+                <h1>
+                    <span class="success-icon-small">✓</span>
+                    <span data-i18n="participant.complete.title">¡Evaluación Completada!</span>
+                </h1>
+            </div>
             
             <div class="card">
-                <div class="success-icon">✓</div>
-                <p data-i18n="participant.complete.message">Has completado todas las evaluaciones. Tu Ventana de Johari se generará cuando todos los participantes terminen.</p>
+                <p class="completion-message" data-i18n="participant.complete.message">Has completado todas las evaluaciones.</p>
+                
+                <!-- Progreso de compañeros -->
+                <div class="progress-card" id="progressCard">
+                    <div class="progress-header">
+                        <h3 data-i18n="participant.complete.waiting">Esperando que completen otros participantes</h3>
+                        <span class="refresh-indicator" data-i18n="participant.complete.autoRefresh">Actualizando automáticamente</span>
+                    </div>
+                    <div class="progress-info">
+                        <p id="progressText" data-i18n="participant.complete.progress">Completado: <strong>1/8</strong> participantes</p>
+                        <div class="progress-list" id="progressList"></div>
+                    </div>
+                </div>
                 
                 <div class="result-preview">
                     <h3 data-i18n="participant.complete.preview">Vista previa de tu ventana:</h3>

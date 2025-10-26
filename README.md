@@ -1,72 +1,85 @@
 # Johari Window - Team Exercise
 
-Minimalist web application for performing the Johari Window exercise with distributed teams.
+Modern web application for performing the Johari Window exercise with distributed teams. Features real-time collaboration using Firestore and full cloud deployment.
 
 ## 🎯 Features
 
-- **HTML5 + CSS3 + Vanilla JavaScript** (no dependencies)
+- **Real-time collaboration** with Firestore backend
+- **Multi-user support** across different browsers and devices
 - **Multi-language** with hot-reload (Spanish, French, English)
-- **Local persistence** with LocalStorage
 - **Dual visualization**: classic (4 equal quadrants) and proportional
 - **56 adjectives** from the original Johari Window
 - **Unique access codes** for participants
-- **Administrator panel** with view of all windows
+- **Administrator panel** with real-time progress tracking
 - **Data export** and image download
+- **Live progress updates** showing completion status
+
+## 🏗️ Architecture
+
+### Frontend
+- HTML5, CSS3, Vanilla JavaScript
+- Responsive design
+- Real-time updates every 5 seconds
+
+### Backend
+- Node.js + Express API
+- Firestore (Google Cloud) for data persistence
+- Cloud Run deployment with nginx proxy
 
 ## 📋 Usage Flow
 
 ### 1. Initial Setup (Admin)
-- Access `index.html`
+- Access the deployed URL or run locally
 - Enter participant names (minimum 2)
+- Click "Add participant" to add more team members
 - Generate unique access codes
 - Share codes with the team
 
 ### 2. Participants
-- Access `participant.html` with their code
-- Complete self-assessment (5-6 adjectives)
+- Access participant page with their unique code
+- Complete self-assessment (select 5-6 adjectives)
 - Evaluate all peers (5-6 adjectives each)
-- View their window upon completion
+- View progress of other participants in real-time
+- See live updates as others complete the exercise
 
 ### 3. Analysis (Admin)
-- Access `admin.html` with administrator code
-- View everyone's progress
+- Access admin panel with administrator code
+- View real-time progress of all participants
+- See completion status (completed/pending)
 - Visualize all generated windows
 - Download individual or all images
 - Export data to JSON
 
 ## 🚀 Deployment
 
-### Option 1: Local
-```bash
-# Simple Python server
-python3 -m http.server 8000
+### Cloud Run (Recommended)
 
-# Or with Node.js
-npx http-server -p 8000
+The app is deployed as a single Cloud Run service with nginx serving the frontend and proxying API calls to the Node.js backend.
+
+```bash
+# 1. Deploy using the deploy script
+./deploy.sh
+
+# It will:
+# - Use your default gcloud project
+# - Build the container with nginx + backend
+# - Deploy to Cloud Run
+# - Configure Firestore permissions
 ```
 
-Access `http://localhost:8000`
+**Prerequisites:**
+- Google Cloud Project with billing enabled
+- Firestore enabled in Firebase Console
+- gcloud CLI installed
 
-### Option 2: Cloud Run (Google Cloud)
+### Local Development
+
 ```bash
-# 1. Create a Dockerfile
-FROM nginx:alpine
-COPY . /usr/share/nginx/html
-EXPOSE 8080
-CMD ["nginx", "-g", "daemon off;"]
+# Start local server (backend + frontend)
+./start-local.sh
 
-# 2. Build and deploy
-gcloud builds submit --tag gcr.io/[PROJECT-ID]/johari-window
-gcloud run deploy johari-window \
-  --image gcr.io/[PROJECT-ID]/johari-window \
-  --platform managed \
-  --allow-unauthenticated
+# Access at http://localhost:8080
 ```
-
-### Option 3: Netlify/Vercel
-- Upload the complete folder
-- Automatic deploy
-- Ready! 🎉
 
 ## 📁 Project Structure
 
@@ -76,16 +89,56 @@ johari-window/
 ├── participant.html       # Participant interface
 ├── admin.html             # Administrator panel
 ├── css/
-│   └── styles.css         # Minimalist styles
-└── js/
-    ├── i18n.js           # Translation system
-    ├── data.js           # Adjectives + storage
-    ├── johari.js         # Calculation algorithm
-    ├── canvas.js         # Visualization
-    ├── setup.js          # Setup logic
-    ├── participante.js   # Participant logic
-    └── admin.js          # Admin logic
+│   └── styles.css         # Application styles
+├── js/
+│   ├── i18n.js           # Translation system
+│   ├── data.js           # API client + adjectives
+│   ├── johari.js         # Calculation algorithm
+│   ├── canvas.js         # Visualization
+│   ├── setup.js          # Setup logic
+│   ├── participante.js   # Participant logic
+│   └── admin.js          # Admin logic
+├── server/
+│   ├── server.js         # Express API backend
+│   ├── package.json      # Node.js dependencies
+│   └── Dockerfile        # Backend container
+├── Dockerfile             # Frontend + Backend container
+├── start.sh               # Container startup script
+├── deploy.sh              # Cloud Run deployment script
+└── .gitignore            # Git exclusions
 ```
+
+## 🔧 Technical Details
+
+### Backend API Endpoints
+
+- `GET /api/session` - Get current session
+- `POST /api/session` - Create/update session
+- `DELETE /api/session` - Delete session
+- `GET /api/participant/:code` - Get participant by code
+- `PUT /api/participant/:code/self-assessment` - Save self-assessment
+- `PUT /api/participant/:code/peer-assessment/:evaluatedCode` - Save peer assessment
+
+### Data Storage
+
+- **Firestore** collection: `sessions`
+- **Document ID**: `current`
+- **Schema**:
+  ```json
+  {
+    "adminCode": "ABCDEF",
+    "participants": [
+      {
+        "name": "John Doe",
+        "code": "XYZ123",
+        "selfAssessment": [...],
+        "peerAssessments": {...},
+        "completed": false
+      }
+    ],
+    "createdAt": "2025-01-01T00:00:00Z"
+  }
+  ```
 
 ## 🎨 Customization
 
@@ -121,17 +174,21 @@ adjectives: {
 }
 ```
 
-## 🔒 Privacy
+## 🌐 Environment Variables
 
-- All data is stored in browser's **LocalStorage**
-- No backend or external database
-- Data remains on user's device
-- Can be exported to JSON for backup
+When deploying to Cloud Run:
+- `GOOGLE_CLOUD_PROJECT` - Project ID for Firestore
+
+For local development:
+- Set `API_BASE_URL` in browser console or edit HTML
 
 ## 💡 FAQ
 
 **Can you use fewer than 2 participants?**
 No, minimum of 2 participants required.
+
+**Does it work offline?**
+Only with the default LocalStorage fallback. For multi-user collaboration, Firestore backend is required.
 
 **Do codes expire?**
 No, codes are permanent as long as the session isn't reset.
@@ -139,13 +196,40 @@ No, codes are permanent as long as the session isn't reset.
 **Can the exercise be paused?**
 Yes, each participant can close the browser and continue later with their code.
 
-**Does it work offline?**
-Yes, once loaded initially, it works offline.
+**How does real-time work?**
+The app polls the Firestore backend every 5 seconds to get the latest data.
 
-## 📝 License
+**Is my data secure?**
+Yes, data is stored in Google Cloud Firestore with authentication. You can review your project's security settings in the Firebase Console.
 
-Free for educational and business use.
+## 📊 Cost Estimation
+
+**Firestore Free Tier:**
+- 50K reads/day
+- 20K writes/day
+- 20K deletes/day
+- 1GB storage
+
+For typical usage (10 participants, once per month):
+- Reads: ~500 operations
+- Writes: ~300 operations
+- Storage: <1MB
+
+**Cloud Run:**
+- Free tier: 2 million requests/month
+- After that: $0.40 per million requests
+
+## 🔒 Privacy
+
+- Data is stored in Google Cloud Firestore
+- Access controlled by unique codes
+- No personal information collected
+- Data can be exported and deleted at any time
 
 ## 🤝 Credits
 
 Based on the **Johari Window** by Joseph Luft and Harry Ingham (1955).
+
+## 📝 License
+
+Free for educational and business use.

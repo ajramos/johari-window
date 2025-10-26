@@ -163,11 +163,62 @@ document.addEventListener('DOMContentLoaded', () => {
         completionScreen.classList.remove('hidden');
         
         await renderPreviewWindow();
+        await renderProgress();
+        
+        // Auto-refresh cada 5 segundos
+        const refreshInterval = setInterval(async () => {
+            await renderProgress();
+        }, 5000);
+        
+        // Limpiar intervalo cuando el usuario sale de la pantalla
+        window.addEventListener('beforeunload', () => {
+            clearInterval(refreshInterval);
+        });
         
         const downloadBtn = document.getElementById('downloadPreview');
         downloadBtn.addEventListener('click', async () => {
             await JohariCanvas.downloadWindow(currentParticipant.code, false);
         });
+    }
+    
+    // Mostrar progreso de otros participantes
+    async function renderProgress() {
+        try {
+            const session = await JohariData.getSession();
+            if (!session || !session.participants) return;
+            
+            const progressCard = document.getElementById('progressCard');
+            const progressText = document.getElementById('progressText');
+            const progressList = document.getElementById('progressList');
+            
+            if (!progressCard || !progressText || !progressList) return;
+            
+            const totalParticipants = session.participants.length;
+            const completedParticipants = session.participants.filter(p => p.completed).length;
+            
+            // Actualizar texto de progreso
+            const progressTemplate = i18n.t('participant.complete.progress');
+            progressText.innerHTML = progressTemplate
+                .replace('<strong>X', `<strong>${completedParticipants}`)
+                .replace('Y</strong>', `${totalParticipants}</strong>`);
+            
+            // Renderizar lista de participantes
+            progressList.innerHTML = '';
+            session.participants.forEach(participant => {
+                const item = document.createElement('div');
+                item.className = `progress-item-card ${participant.completed ? 'completed' : 'pending'}`;
+                
+                const statusIcon = participant.completed ? '✓' : '⏳';
+                item.innerHTML = `
+                    <span class="status-icon">${statusIcon}</span>
+                    <span>${participant.name}</span>
+                `;
+                
+                progressList.appendChild(item);
+            });
+        } catch (error) {
+            console.error('Error rendering progress:', error);
+        }
     }
     
     // Renderizar preview de la ventana

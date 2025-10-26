@@ -54,9 +54,12 @@ const i18n = {
                 },
                 complete: {
                     title: '¡Evaluación Completada!',
-                    message: 'Has completado todas las evaluaciones. Tu Ventana de Johari se generará cuando todos los participantes terminen.',
+                    message: 'Has completado todas las evaluaciones.',
                     preview: 'Vista previa de tu ventana:',
-                    download: 'Descargar mi ventana'
+                    download: 'Descargar mi ventana',
+                    waiting: 'Esperando que completen otros participantes',
+                    autoRefresh: 'Actualizando automáticamente',
+                    progress: 'Completado: <strong>X/Y</strong> participantes'
                 }
             },
             admin: {
@@ -142,9 +145,12 @@ const i18n = {
                 },
                 complete: {
                     title: 'Évaluation Terminée!',
-                    message: 'Vous avez terminé toutes les évaluations. Votre Fenêtre de Johari sera générée lorsque tous les participants auront terminé.',
+                    message: 'Vous avez terminé toutes les évaluations.',
                     preview: 'Aperçu de votre fenêtre:',
-                    download: 'Télécharger ma fenêtre'
+                    download: 'Télécharger ma fenêtre',
+                    waiting: 'En attente que d\'autres participants terminent',
+                    autoRefresh: 'Mise à jour automatique',
+                    progress: 'Terminé: <strong>X/Y</strong> participants'
                 }
             },
             admin: {
@@ -230,9 +236,12 @@ const i18n = {
                 },
                 complete: {
                     title: 'Assessment Completed!',
-                    message: 'You have completed all assessments. Your Johari Window will be generated when all participants finish.',
+                    message: 'You have completed all assessments.',
                     preview: 'Preview of your window:',
-                    download: 'Download my window'
+                    download: 'Download my window',
+                    waiting: 'Waiting for other participants to complete',
+                    autoRefresh: 'Auto-updating',
+                    progress: 'Completed: <strong>X/Y</strong> participants'
                 }
             },
             admin: {

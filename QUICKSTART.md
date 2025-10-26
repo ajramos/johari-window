@@ -1,117 +1,164 @@
-# 🚀 Quick Start - Johari Window
+# Quick Start Guide - Johari Window
 
-## ⚡ Option 1: Local Server (fastest)
+Get the Johari Window application up and running in minutes.
 
+## 🚀 Quick Deployment to Cloud Run
+
+### Prerequisites
 ```bash
-# In the project folder:
-./start-local.sh
+# Install gcloud CLI
+# https://cloud.google.com/sdk/docs/install
 
-# Or manually:
-python3 -m http.server 8000
+# Login to your Google account
+gcloud auth login
+
+# Set your project (optional - script will ask)
+gcloud config set project YOUR_PROJECT_ID
 ```
 
-Access: **http://localhost:8000**
+### Deploy in 3 Steps
 
----
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/ajramos/johari-window.git
+   cd johari-window
+   ```
 
-## ☁️ Option 2: Deploy to Cloud Run
+2. **Run the deploy script**
+   ```bash
+   ./deploy.sh
+   ```
+   
+   The script will:
+   - Ask for your project ID (or use default from gcloud)
+   - Ask for region (default: europe-west1)
+   - Enable necessary APIs
+   - Configure Firestore permissions
+   - Build and deploy the application
+   - Give you the deployment URL
 
-```bash
-# Run the deploy script:
-./deploy.sh
+3. **Enable Firestore in Firebase Console**
+   - Go to https://console.firebase.google.com
+   - Select your project
+   - Enable Firestore Database (Native mode)
+   - Choose your preferred location
 
-# Follow on-screen instructions
-```
+That's it! Your app is live. 🎉
 
----
+## 📱 Using the Application
 
-## 📝 First Steps
+### Step 1: Create Session (Admin)
 
-### 1️⃣ Setup (Admin)
-1. Open `index.html` in your browser
+1. Open your deployed URL
 2. Enter participant names (minimum 2)
-3. Click "Generate access codes"
-4. **Copy and share** codes with your team
+3. Click "+ Add participant" to add more
+4. Click "Generate access codes"
+5. Share codes with your team
 
-### 2️⃣ Participants
-1. Access `participant.html`
-2. Enter your **personal code**
-3. Complete your **self-assessment** (5-6 adjectives)
-4. Evaluate your **peers** (5-6 adjectives each)
-5. Download your Johari window!
+### Step 2: Participants Complete Assessment
 
-### 3️⃣ Analysis (Admin)
-1. Access `admin.html`
-2. Enter your **administrator code**
-3. View everyone's **progress**
-4. **Visualize and download** all windows
-5. Facilitate **team discussion**
+1. Each participant opens the participant page
+2. Enters their personal code
+3. Completes self-assessment (select 5-6 adjectives)
+4. Evaluates all peers (5-6 adjectives each)
+5. Views their Johari Window
 
----
+### Step 3: View Results (Admin)
 
-## 🎯 Tips for the Dynamic
+1. Open admin page with admin code
+2. See real-time progress of all participants
+3. View all completed windows
+4. Download individual or all images
 
-### Before the exercise:
-- ✅ Explain the Johari Window concept
-- ✅ Emphasize it's **anonymous** (evaluations don't show who chose what)
-- ✅ Create an atmosphere of **trust** and openness
-- ✅ Set a **deadline** to complete evaluations
+## 🧪 Local Development
 
-### During the exercise:
-- ✅ Allow each person to do it **at their own pace**
-- ✅ Resolve technical doubts if they arise
-- ✅ Remind them to choose **5-6 adjectives** (no more, no less)
+### Start Locally
 
-### After the exercise:
-- ✅ Schedule a **group discussion session**
-- ✅ Each person shares their window if comfortable
-- ✅ Focus on **growth areas**, not judging
-- ✅ Establish **commitments** based on learnings
+```bash
+./start-local.sh
+```
 
----
+Access at `http://localhost:8080`
 
-## 🌍 Change Language
+### Note: Local mode uses LocalStorage and doesn't support multi-user collaboration. Use Cloud Run deployment for multi-user testing.
 
-Participants can change the language at any time:
-- 🇪🇸 **Español**
-- 🇫🇷 **Français**  
-- 🇬🇧 **English**
+## 📊 Understanding the Johari Window
 
-The change is **instantaneous** without reloading the page.
+The application divides 56 adjectives into 4 areas:
 
----
+1. **Open Area** (Green): What I know and others know
+2. **Blind Area** (Orange): What others know but I don't
+3. **Hidden Area** (Blue): What I know but others don't
+4. **Unknown Area** (Gray): What neither I nor others know
 
-## 💾 Data Backup
+## 🔧 Troubleshooting
 
-Data is saved in browser's **LocalStorage**. To backup:
+### "Code not valid" error
 
-1. Go to **Admin** panel
-2. Click **"Export data (JSON)"**
-3. Save the file in a safe place
+- Make sure you're using the correct code (case-sensitive)
+- Verify the session still exists in Firestore
+- Try refreshing the page
 
----
+### Progress not updating
 
-## ❓ Troubleshooting
+- App auto-refreshes every 5 seconds
+- Check browser console for errors
+- Verify Firestore is enabled and has proper permissions
 
-**"My code doesn't work"**
-- Check you typed it correctly (uppercase/lowercase)
-- Make sure you're on the correct page (participant vs admin)
+### Backend not working
 
-**"I lost my data"**
-- Data is in browser's LocalStorage
-- If you cleared cache, data was lost
-- Use JSON backup to restore
+- Check Cloud Run logs: `gcloud run services logs read johari-window --region YOUR_REGION`
+- Verify Firestore is enabled in Firebase Console
+- Ensure the service has `roles/datastore.user` permission
 
-**"I want to change a participant"**
-- Admin can reset the exercise
-- Or manually edit the exported JSON
+## 📁 Key Files
 
----
+- `index.html` - Setup page
+- `participant.html` - Participant interface  
+- `admin.html` - Admin dashboard
+- `js/data.js` - API client and data logic
+- `server/server.js` - Backend API
+- `deploy.sh` - Deployment script
+
+## 🌍 Production Deployment
+
+### Custom Domain
+
+1. Map a custom domain in Cloud Run
+2. Update `API_BASE_URL` if needed
+3. Test all functionality
+
+### Monitoring
+
+- Check Cloud Run metrics in GCP Console
+- Monitor Firestore usage in Firebase Console
+- Set up alerts for high usage
 
 ## 📞 Support
 
-For more information, read the full **README.md**.
+For issues or questions:
+- Check GitHub Issues: https://github.com/ajramos/johari-window
+- Review logs in Cloud Run console
+- Test with 2 participants first before scaling
 
----
+## 🎯 Best Practices
 
-Enjoy the exercise! 🎉
+1. **Always start with 2 participants** to test the flow
+2. **Save admin code** before distributing participant codes
+3. **Use "New Session" button** to start fresh experiments
+4. **Export data** before resetting if you want to keep results
+5. **Monitor Firestore usage** if expecting many sessions
+
+## ✨ Features
+
+- ✅ Real-time collaboration
+- ✅ Multi-language support (ES/FR/EN)
+- ✅ Live progress tracking
+- ✅ Auto-updating dashboard
+- ✅ Beautiful visualizations
+- ✅ Export and download options
+- ✅ Responsive design
+- ✅ No external dependencies (frontend)
+- ✅ Cloud-native backend
+
+Enjoy your Johari Window exercise! 🚀
