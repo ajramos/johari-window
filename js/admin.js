@@ -110,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const downloadBtn = document.createElement('button');
                 downloadBtn.className = 'btn-secondary';
                 downloadBtn.textContent = i18n.t('participant.complete.download') || 'Descargar';
-                downloadBtn.style.marginTop = '10px';
                 downloadBtn.addEventListener('click', () => {
                     JohariCanvas.downloadWindow(participant.code, isProportionalView);
                 });

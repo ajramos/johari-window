@@ -365,7 +365,13 @@ h3 {
     height: auto;
     border: 2px solid var(--border-color);
     border-radius: 8px;
-    margin: 20px 0;
+    margin: 20px auto;
+    display: block;
+}
+
+.result-preview button {
+    margin: 30px auto 0 auto;
+    display: block;
 }
 
 /* Admin Dashboard */
@@ -438,6 +444,13 @@ h3 {
     height: auto;
     border: 2px solid var(--border-color);
     border-radius: 8px;
+    display: block;
+    margin: 0 auto;
+}
+
+.window-item button {
+    margin: 20px auto 0 auto;
+    display: block;
 }
 
 .admin-actions {
