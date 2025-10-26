@@ -21,21 +21,17 @@
             
             <div class="card">
                 <h2 data-i18n="setup.participants">Participantes del equipo</h2>
-                <p data-i18n="setup.instruction">Ingresa los nombres de los 9 miembros del equipo:</p>
+                <p data-i18n="setup.instruction">Ingresa los nombres de los miembros del equipo:</p>
                 
-                <div class="participants-form">
-                    <input type="text" class="participant-input" placeholder="Nombre participante 1" data-i18n-placeholder="setup.placeholder">
-                    <input type="text" class="participant-input" placeholder="Nombre participante 2" data-i18n-placeholder="setup.placeholder">
-                    <input type="text" class="participant-input" placeholder="Nombre participante 3" data-i18n-placeholder="setup.placeholder">
-                    <input type="text" class="participant-input" placeholder="Nombre participante 4" data-i18n-placeholder="setup.placeholder">
-                    <input type="text" class="participant-input" placeholder="Nombre participante 5" data-i18n-placeholder="setup.placeholder">
-                    <input type="text" class="participant-input" placeholder="Nombre participante 6" data-i18n-placeholder="setup.placeholder">
-                    <input type="text" class="participant-input" placeholder="Nombre participante 7" data-i18n-placeholder="setup.placeholder">
-                    <input type="text" class="participant-input" placeholder="Nombre participante 8" data-i18n-placeholder="setup.placeholder">
-                    <input type="text" class="participant-input" placeholder="Nombre participante 9" data-i18n-placeholder="setup.placeholder">
+                <div class="participants-form" id="participantsForm"></div>
+                
+                <div class="participants-controls">
+                    <button class="btn-secondary" id="addParticipantBtn" data-i18n="setup.addParticipant">+ Añadir participante</button>
                 </div>
-
-                <button class="btn-primary" id="generateCodes" data-i18n="setup.generate">Generar códigos de acceso</button>
+                
+                <div style="margin-top: 30px;">
+                    <button class="btn-primary" id="generateCodes" data-i18n="setup.generate">Generar códigos de acceso</button>
+                </div>
             </div>
         </main>
 

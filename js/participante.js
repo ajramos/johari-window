@@ -100,12 +100,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const countElement = document.getElementById('peerCount');
         const nameElement = document.getElementById('currentPeerName');
         const numberElement = document.getElementById('currentPeerNumber');
+        const totalCountElement = document.getElementById('totalPeersCount');
         const progressFill = document.getElementById('progressFill');
         const prevBtn = document.getElementById('previousPeer');
         const nextBtn = document.getElementById('nextPeer');
         
         nameElement.textContent = currentPeer.name;
         numberElement.textContent = currentPeerIndex + 1;
+        totalCountElement.textContent = otherParticipants.length;
         
         const progress = ((currentPeerIndex + 1) / otherParticipants.length) * 100;
         progressFill.style.width = `${progress}%`;

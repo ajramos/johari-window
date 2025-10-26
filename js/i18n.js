@@ -8,9 +8,12 @@ const i18n = {
             setup: {
                 title: 'Configuración - Ventana de Johari',
                 participants: 'Participantes del equipo',
-                instruction: 'Ingresa los nombres de los 9 miembros del equipo:',
+                instruction: 'Ingresa los nombres de los miembros del equipo:',
                 placeholder: 'Nombre participante',
-                generate: 'Generar códigos de acceso'
+                generate: 'Generar códigos de acceso',
+                addParticipant: '+ Añadir participante',
+                errorMinParticipants: 'Debe haber al menos 2 participantes',
+                errorDuplicate: 'Los nombres deben ser únicos'
             },
             codes: {
                 title: 'Códigos generados',
@@ -91,9 +94,12 @@ const i18n = {
             setup: {
                 title: 'Configuration - Fenêtre de Johari',
                 participants: 'Participants de l\'équipe',
-                instruction: 'Entrez les noms des 9 membres de l\'équipe:',
+                instruction: 'Entrez les noms des membres de l\'équipe:',
                 placeholder: 'Nom du participant',
-                generate: 'Générer les codes d\'accès'
+                generate: 'Générer les codes d\'accès',
+                addParticipant: '+ Ajouter un participant',
+                errorMinParticipants: 'Il doit y avoir au moins 2 participants',
+                errorDuplicate: 'Les noms doivent être uniques'
             },
             codes: {
                 title: 'Codes générés',
@@ -174,9 +180,12 @@ const i18n = {
             setup: {
                 title: 'Setup - Johari Window',
                 participants: 'Team Participants',
-                instruction: 'Enter the names of the 9 team members:',
+                instruction: 'Enter the names of the team members:',
                 placeholder: 'Participant name',
-                generate: 'Generate access codes'
+                generate: 'Generate access codes',
+                addParticipant: '+ Add participant',
+                errorMinParticipants: 'There must be at least 2 participants',
+                errorDuplicate: 'Names must be unique'
             },
             codes: {
                 title: 'Generated Codes',

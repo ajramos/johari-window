@@ -5,11 +5,47 @@ document.addEventListener('DOMContentLoaded', () => {
     const codesScreen = document.getElementById('codesScreen');
     const generateBtn = document.getElementById('generateCodes');
     const copyAllBtn = document.getElementById('copyAllCodes');
+    const addParticipantBtn = document.getElementById('addParticipantBtn');
+    const participantsForm = document.getElementById('participantsForm');
+    
+    let participantCounter = 0;
     
     // Verificar si ya existe una sesión
     const existingSession = JohariData.getSession();
     if (existingSession) {
         displayCodes(existingSession);
+        return;
+    }
+    
+    // Inicializar con 2 participantes por defecto
+    addParticipant();
+    addParticipant();
+    
+    // Añadir participante
+    addParticipantBtn.addEventListener('click', addParticipant);
+    
+    function addParticipant() {
+        participantCounter++;
+        const inputWrapper = document.createElement('div');
+        inputWrapper.className = 'participant-input-wrapper';
+        inputWrapper.innerHTML = `
+            <input type="text" class="participant-input" 
+                   placeholder="${i18n.t('setup.placeholder') || 'Nombre participante'}" 
+                   data-participant-id="${participantCounter}">
+            <button type="button" class="btn-remove-participant" data-participant-id="${participantCounter}">✕</button>
+        `;
+        participantsForm.appendChild(inputWrapper);
+        
+        // Añadir event listener al botón de eliminar
+        const removeBtn = inputWrapper.querySelector('.btn-remove-participant');
+        removeBtn.addEventListener('click', () => removeParticipant(participantCounter));
+    }
+    
+    function removeParticipant(id) {
+        const wrapper = participantsForm.querySelector(`.participant-input-wrapper input[data-participant-id="${id}"]`)?.closest('.participant-input-wrapper');
+        if (wrapper && participantsForm.children.length > 1) {
+            wrapper.remove();
+        }
     }
     
     // Generar códigos
@@ -19,8 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
             .map(input => input.value.trim())
             .filter(name => name !== '');
         
-        if (names.length !== 9) {
-            alert(i18n.t('setup.errorNames') || 'Por favor, ingresa los 9 nombres de participantes');
+        if (names.length < 2) {
+            alert(i18n.t('setup.errorMinParticipants') || 'Debe haber al menos 2 participantes');
             return;
         }
         

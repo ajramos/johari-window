@@ -157,6 +157,39 @@ h3 {
     margin: 20px 0;
 }
 
+.participant-input-wrapper {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.participant-input-wrapper .participant-input {
+    flex: 1;
+}
+
+.btn-remove-participant {
+    background: var(--danger-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.btn-remove-participant:hover {
+    background: #dc2626;
+}
+
+.participants-controls {
+    margin-top: 10px;
+}
+
 .participant-input,
 .code-input {
     padding: 12px;
