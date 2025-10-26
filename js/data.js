@@ -41,6 +41,16 @@ const JohariData = {
         ]
     },
     
+    // Get adjective text by index in current language
+    getAdjectiveByIndex(index, lang = 'es') {
+        return this.adjectives[lang] ? this.adjectives[lang][index] : this.adjectives.es[index];
+    },
+    
+    // Convert text to index in any language
+    adjectiveTextToIndex(text, lang = 'es') {
+        return this.adjectives[lang] ? this.adjectives[lang].indexOf(text) : this.adjectives.es.indexOf(text);
+    },
+    
     // Generar código único de 6 caracteres
     generateCode() {
         const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Sin caracteres confusos

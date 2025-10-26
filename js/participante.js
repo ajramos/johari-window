@@ -162,19 +162,30 @@ document.addEventListener('DOMContentLoaded', () => {
         peerAssessmentScreen.classList.add('hidden');
         completionScreen.classList.remove('hidden');
         
-        // Generar preview de la ventana
-        const canvas = document.getElementById('previewCanvas');
-        const windowData = JohariWindow.calculate(currentParticipant.code);
-        
-        if (windowData) {
-            JohariCanvas.drawClassic(canvas, windowData);
-        }
+        renderPreviewWindow();
         
         const downloadBtn = document.getElementById('downloadPreview');
         downloadBtn.addEventListener('click', () => {
             JohariCanvas.downloadWindow(currentParticipant.code, false);
         });
     }
+    
+    // Renderizar preview de la ventana
+    function renderPreviewWindow() {
+        const canvas = document.getElementById('previewCanvas');
+        const windowData = JohariWindow.calculate(currentParticipant.code);
+        
+        if (windowData && canvas) {
+            JohariCanvas.drawClassic(canvas, windowData);
+        }
+    }
+    
+    // Listener para cambio de idioma
+    window.addEventListener('languageChanged', () => {
+        if (!completionScreen.classList.contains('hidden')) {
+            renderPreviewWindow();
+        }
+    });
     
     // RENDERIZAR GRID DE ADJETIVOS
     function renderAdjectivesGrid(container, selected, onChange) {

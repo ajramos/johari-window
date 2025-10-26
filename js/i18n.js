@@ -284,6 +284,9 @@ const i18n = {
         localStorage.setItem('johari_language', lang);
         this.updateDOM();
         this.updateLanguageButtons();
+        
+        // Disparar evento personalizado para regenerar ventanas
+        window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang } }));
     },
     
     // Actualizar todo el DOM con las traducciones

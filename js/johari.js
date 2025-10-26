@@ -9,30 +9,47 @@ const JohariWindow = {
         const participant = session.participants.find(p => p.code === participantCode);
         if (!participant) return null;
         
-        const selfAdjectives = participant.selfAssessment;
-        const peerAdjectives = JohariData.getPeerAssessmentsFor(participantCode);
-        
-        // Obtener todos los adjetivos únicos mencionados por los compañeros
-        const uniquePeerAdjectives = [...new Set(peerAdjectives)];
-        
-        // Obtener idioma actual para los adjetivos
         const currentLang = i18n.currentLang;
         const allAdjectives = JohariData.adjectives[currentLang];
         
-        // Calcular las 4 áreas
-        const openArea = selfAdjectives.filter(adj => uniquePeerAdjectives.includes(adj));
-        const blindArea = uniquePeerAdjectives.filter(adj => !selfAdjectives.includes(adj));
-        const hiddenArea = selfAdjectives.filter(adj => !uniquePeerAdjectives.includes(adj));
-        const unknownArea = allAdjectives.filter(adj => 
-            !selfAdjectives.includes(adj) && !uniquePeerAdjectives.includes(adj)
-        );
+        // Convertir adjetivos almacenados (en cualquier idioma) a índices
+        const selfIndices = participant.selfAssessment.map(adj => {
+            // Buscar en todos los idiomas
+            for (let lang of ['es', 'fr', 'en']) {
+                const index = JohariData.adjectives[lang].indexOf(adj);
+                if (index !== -1) return index;
+            }
+            return -1;
+        }).filter(idx => idx !== -1);
         
+        // Obtener evaluaciones de compañeros y convertir a índices
+        const rawPeerAdjectives = JohariData.getPeerAssessmentsFor(participantCode);
+        const peerIndices = rawPeerAdjectives.map(adj => {
+            for (let lang of ['es', 'fr', 'en']) {
+                const index = JohariData.adjectives[lang].indexOf(adj);
+                if (index !== -1) return index;
+            }
+            return -1;
+        }).filter(idx => idx !== -1);
+        
+        // Crear sets de índices
+        const selfSet = new Set(selfIndices);
+        const peerSet = new Set(peerIndices);
+        
+        // Calcular las 4 áreas usando índices
+        const openArea = [...selfSet].filter(idx => peerSet.has(idx));
+        const blindArea = [...peerSet].filter(idx => !selfSet.has(idx));
+        const hiddenArea = [...selfSet].filter(idx => !peerSet.has(idx));
+        const unknownIndices = allAdjectives.map((_, idx) => idx);
+        const unknownArea = unknownIndices.filter(idx => !selfSet.has(idx) && !peerSet.has(idx));
+        
+        // Convertir índices a texto en el idioma actual
         return {
             participant: participant.name,
-            openArea,
-            blindArea,
-            hiddenArea,
-            unknownArea,
+            openArea: openArea.map(idx => allAdjectives[idx]),
+            blindArea: blindArea.map(idx => allAdjectives[idx]),
+            hiddenArea: hiddenArea.map(idx => allAdjectives[idx]),
+            unknownArea: unknownArea.map(idx => allAdjectives[idx]),
             stats: {
                 open: openArea.length,
                 blind: blindArea.length,

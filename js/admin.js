@@ -153,4 +153,11 @@ document.addEventListener('DOMContentLoaded', () => {
         renderProgressSummary();
         renderWindows();
     }, 10000);
+    
+    // Listener para cambio de idioma
+    window.addEventListener('languageChanged', () => {
+        if (!loginScreen.classList.contains('hidden')) return;
+        renderProgressSummary();
+        renderWindows();
+    });
 });
