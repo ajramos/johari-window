@@ -1,4 +1,4 @@
-// Lógica para la página de participante (participante.html)
+// Lógica para la página de participante (participant.html)
 
 let currentParticipant = null;
 let currentPeerIndex = 0;

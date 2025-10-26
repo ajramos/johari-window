@@ -1,61 +1,61 @@
-# Ventana de Johari - Ejercicio de Equipo
+# Johari Window - Team Exercise
 
-Aplicación web minimalista para realizar el ejercicio de la Ventana de Johari con equipos distribuidos.
+Minimalist web application for performing the Johari Window exercise with distributed teams.
 
-## 🎯 Características
+## 🎯 Features
 
-- **HTML5 + CSS3 + JavaScript Vanilla** (sin dependencias)
-- **Multi-idioma** con hot-reload (Español, Francés, Inglés)
-- **Persistencia local** con LocalStorage
-- **Visualización dual**: clásica (4 cuadrantes iguales) y proporcional
-- **56 adjetivos** de la Ventana de Johari original
-- **Códigos únicos** de acceso para 9 participantes
-- **Panel de administrador** con vista de todas las ventanas
-- **Exportación** de datos y descarga de imágenes
+- **HTML5 + CSS3 + Vanilla JavaScript** (no dependencies)
+- **Multi-language** with hot-reload (Spanish, French, English)
+- **Local persistence** with LocalStorage
+- **Dual visualization**: classic (4 equal quadrants) and proportional
+- **56 adjectives** from the original Johari Window
+- **Unique access codes** for participants
+- **Administrator panel** with view of all windows
+- **Data export** and image download
 
-## 📋 Flujo de uso
+## 📋 Usage Flow
 
-### 1. Configuración inicial (Admin)
-- Accede a `index.html`
-- Ingresa los 9 nombres de participantes
-- Genera códigos de acceso únicos
-- Comparte códigos con el equipo
+### 1. Initial Setup (Admin)
+- Access `index.html`
+- Enter participant names (minimum 2)
+- Generate unique access codes
+- Share codes with the team
 
-### 2. Participantes
-- Accede a `participante.html` con su código
-- Completa autoevaluación (5-6 adjetivos)
-- Evalúa a los 8 compañeros (5-6 adjetivos cada uno)
-- Visualiza su ventana al finalizar
+### 2. Participants
+- Access `participant.html` with their code
+- Complete self-assessment (5-6 adjectives)
+- Evaluate all peers (5-6 adjectives each)
+- View their window upon completion
 
-### 3. Análisis (Admin)
-- Accede a `admin.html` con código de administrador
-- Ve el progreso de todos
-- Visualiza todas las ventanas generadas
-- Descarga imágenes individuales o todas
-- Exporta datos a JSON
+### 3. Analysis (Admin)
+- Access `admin.html` with administrator code
+- View everyone's progress
+- Visualize all generated windows
+- Download individual or all images
+- Export data to JSON
 
-## 🚀 Despliegue
+## 🚀 Deployment
 
-### Opción 1: Local
+### Option 1: Local
 ```bash
-# Servidor Python simple
+# Simple Python server
 python3 -m http.server 8000
 
-# O con Node.js
+# Or with Node.js
 npx http-server -p 8000
 ```
 
-Accede a `http://localhost:8000`
+Access `http://localhost:8000`
 
-### Opción 2: Cloud Run (Google Cloud)
+### Option 2: Cloud Run (Google Cloud)
 ```bash
-# 1. Crea un Dockerfile
+# 1. Create a Dockerfile
 FROM nginx:alpine
 COPY . /usr/share/nginx/html
 EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
 
-# 2. Construye y despliega
+# 2. Build and deploy
 gcloud builds submit --tag gcr.io/[PROJECT-ID]/johari-window
 gcloud run deploy johari-window \
   --image gcr.io/[PROJECT-ID]/johari-window \
@@ -63,56 +63,56 @@ gcloud run deploy johari-window \
   --allow-unauthenticated
 ```
 
-### Opción 3: Netlify/Vercel
-- Sube la carpeta completa
-- Deploy automático
-- ¡Listo! 🎉
+### Option 3: Netlify/Vercel
+- Upload the complete folder
+- Automatic deploy
+- Ready! 🎉
 
-## 📁 Estructura del proyecto
+## 📁 Project Structure
 
 ```
 johari-window/
-├── index.html              # Setup inicial
-├── participante.html       # Interfaz participantes
-├── admin.html             # Panel administrador
+├── index.html              # Initial setup
+├── participant.html       # Participant interface
+├── admin.html             # Administrator panel
 ├── css/
-│   └── styles.css         # Estilos minimalistas
+│   └── styles.css         # Minimalist styles
 └── js/
-    ├── i18n.js           # Sistema de traducciones
-    ├── data.js           # Adjetivos + almacenamiento
-    ├── johari.js         # Algoritmo de cálculo
-    ├── canvas.js         # Visualización
-    ├── setup.js          # Lógica de setup
-    ├── participante.js   # Lógica participante
-    └── admin.js          # Lógica admin
+    ├── i18n.js           # Translation system
+    ├── data.js           # Adjectives + storage
+    ├── johari.js         # Calculation algorithm
+    ├── canvas.js         # Visualization
+    ├── setup.js          # Setup logic
+    ├── participante.js   # Participant logic
+    └── admin.js          # Admin logic
 ```
 
-## 🎨 Personalización
+## 🎨 Customization
 
-### Cambiar colores de áreas
-Edita en `js/canvas.js`:
+### Change area colors
+Edit in `js/canvas.js`:
 ```javascript
 const colors = {
-    open: '#10b981',    // Verde
-    blind: '#f59e0b',   // Naranja
-    hidden: '#3b82f6',  // Azul
-    unknown: '#94a3b8'  // Gris
+    open: '#059669',    // Green
+    blind: '#d97706',   // Orange
+    hidden: '#2563eb',  // Blue
+    unknown: '#64748b'  // Gray
 };
 ```
 
-### Añadir nuevo idioma
-Edita en `js/i18n.js`:
+### Add new language
+Edit in `js/i18n.js`:
 ```javascript
 translations: {
     es: { ... },
     fr: { ... },
     en: { ... },
-    de: { ... }  // Nuevo idioma
+    de: { ... }  // New language
 }
 ```
 
-### Modificar adjetivos
-Edita en `js/data.js`:
+### Modify adjectives
+Edit in `js/data.js`:
 ```javascript
 adjectives: {
     es: [ ... ],
@@ -121,31 +121,31 @@ adjectives: {
 }
 ```
 
-## 🔒 Privacidad
+## 🔒 Privacy
 
-- Todos los datos se almacenan en **LocalStorage del navegador**
-- No hay backend ni base de datos externa
-- Los datos permanecen en el dispositivo del usuario
-- Se puede exportar a JSON para backup
+- All data is stored in browser's **LocalStorage**
+- No backend or external database
+- Data remains on user's device
+- Can be exported to JSON for backup
 
-## 💡 Preguntas frecuentes
+## 💡 FAQ
 
-**¿Se pueden usar menos de 9 participantes?**
-Sí, modifica la lógica en `setup.js` para aceptar cualquier cantidad.
+**Can you use fewer than 2 participants?**
+No, minimum of 2 participants required.
 
-**¿Los códigos caducan?**
-No, los códigos son permanentes mientras no se reinicie la sesión.
+**Do codes expire?**
+No, codes are permanent as long as the session isn't reset.
 
-**¿Se puede pausar el ejercicio?**
-Sí, cada participante puede cerrar el navegador y continuar después con su código.
+**Can the exercise be paused?**
+Yes, each participant can close the browser and continue later with their code.
 
-**¿Funciona sin internet?**
-Sí, una vez cargada la primera vez, funciona offline.
+**Does it work offline?**
+Yes, once loaded initially, it works offline.
 
-## 📝 Licencia
+## 📝 License
 
-Libre para uso educativo y empresarial.
+Free for educational and business use.
 
-## 🤝 Créditos
+## 🤝 Credits
 
-Basado en la **Ventana de Johari** de Joseph Luft y Harry Ingham (1955).
+Based on the **Johari Window** by Joseph Luft and Harry Ingham (1955).

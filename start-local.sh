@@ -1,21 +1,21 @@
 #!/bin/bash
 
-# Script para correr servidor local
+# Script to run local server
 
 PORT=8000
 
-echo "🚀 Iniciando servidor local en puerto $PORT..."
-echo "📱 Accede a: http://localhost:$PORT"
-echo "⏹️  Presiona Ctrl+C para detener"
+echo "🚀 Starting local server on port $PORT..."
+echo "📱 Access: http://localhost:$PORT"
+echo "⏹️  Press Ctrl+C to stop"
 echo ""
 
-# Verificar si Python 3 está disponible
+# Check if Python 3 is available
 if command -v python3 &> /dev/null; then
     python3 -m http.server $PORT
 elif command -v python &> /dev/null; then
     python -m http.server $PORT
 else
-    echo "❌ Error: Python no está instalado"
-    echo "Instala Python o usa otro servidor HTTP"
+    echo "❌ Error: Python is not installed"
+    echo "Install Python or use another HTTP server"
     exit 1
 fi
