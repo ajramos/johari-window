@@ -12,6 +12,9 @@ const JohariWindow = {
         const currentLang = i18n.currentLang;
         const allAdjectives = JohariData.adjectives[currentLang];
         
+        // Usar solo los primeros 56 adjetivos (estándar Johari Window)
+        const validAdjectives = allAdjectives.slice(0, 56);
+        
         // Convertir adjetivos almacenados (en cualquier idioma) a índices
         const selfIndices = participant.selfAssessment.map(adj => {
             // Buscar en todos los idiomas
@@ -40,22 +43,24 @@ const JohariWindow = {
         const openArea = [...selfSet].filter(idx => peerSet.has(idx));
         const blindArea = [...peerSet].filter(idx => !selfSet.has(idx));
         const hiddenArea = [...selfSet].filter(idx => !peerSet.has(idx));
-        const unknownIndices = allAdjectives.map((_, idx) => idx);
-        const unknownArea = unknownIndices.filter(idx => !selfSet.has(idx) && !peerSet.has(idx));
+        // Generar índices solo para los adjetivos válidos (56)
+        const unknownArea = validAdjectives
+            .map((_, idx) => idx)
+            .filter(idx => !selfSet.has(idx) && !peerSet.has(idx));
         
         // Convertir índices a texto en el idioma actual
         return {
             participant: participant.name,
-            openArea: openArea.map(idx => allAdjectives[idx]),
-            blindArea: blindArea.map(idx => allAdjectives[idx]),
-            hiddenArea: hiddenArea.map(idx => allAdjectives[idx]),
-            unknownArea: unknownArea.map(idx => allAdjectives[idx]),
+            openArea: openArea.map(idx => validAdjectives[idx]),
+            blindArea: blindArea.map(idx => validAdjectives[idx]),
+            hiddenArea: hiddenArea.map(idx => validAdjectives[idx]),
+            unknownArea: unknownArea.map(idx => validAdjectives[idx]),
             stats: {
                 open: openArea.length,
                 blind: blindArea.length,
                 hidden: hiddenArea.length,
                 unknown: unknownArea.length,
-                total: allAdjectives.length
+                total: validAdjectives.length
             }
         };
     },
