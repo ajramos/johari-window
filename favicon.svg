@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Cuadrante superior izquierdo - Área Abierta (verde) -->
+  <rect x="0" y="0" width="100" height="100" fill="#059669"/>
+  <line x1="100" y1="0" x2="100" y2="200" stroke="#ffffff" stroke-width="3"/>
+  <line x1="0" y1="100" x2="200" y2="100" stroke="#ffffff" stroke-width="3"/>
+  
+  <!-- Cuadrante superior derecho - Área Ciega (naranja) -->
+  <rect x="100" y="0" width="100" height="100" fill="#d97706"/>
+  
+  <!-- Cuadrante inferior izquierdo - Área Oculta (azul) -->
+  <rect x="0" y="100" width="100" height="100" fill="#2563eb"/>
+  
+  <!-- Cuadrante inferior derecho - Área Desconocida (gris) -->
+  <rect x="100" y="100" width="100" height="100" fill="#64748b"/>
+</svg>
+
