@@ -91,7 +91,7 @@
                         <span class="refresh-indicator" data-i18n="participant.complete.autoRefresh">Actualizando automáticamente</span>
                     </div>
                     <div class="progress-info">
-                        <p id="progressText" data-i18n="participant.complete.progress">Completado: <strong>1/8</strong> participantes</p>
+                        <p id="progressText">Completado: <strong>0/0</strong> participantes</p>
                         <div class="progress-list" id="progressList"></div>
                     </div>
                 </div>
@@ -99,7 +99,10 @@
                 <div class="result-preview">
                     <h3 data-i18n="participant.complete.preview">Vista previa de tu ventana:</h3>
                     <canvas id="previewCanvas" width="600" height="600"></canvas>
-                    <button class="btn-secondary" id="downloadPreview" data-i18n="participant.complete.download">Descargar mi ventana</button>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <button class="btn-secondary" id="downloadPreview" data-i18n="participant.complete.download">Descargar mi ventana</button>
+                        <button class="btn-secondary" id="viewAllAdjectives" data-i18n="participant.complete.viewAll">Ver todos los adjetivos</button>
+                    </div>
                 </div>
             </div>
         </main>

@@ -122,8 +122,13 @@ const JohariData = {
         }));
         
         const participantsArray = await Promise.all(participants);
+        
+        // Generate admin password (6 characters)
+        const password = await this.generateUniqueCode();
+        
         const session = {
             adminCode: await this.generateUniqueCode(),
+            adminPassword: password,
             participants: participantsArray,
             createdAt: new Date().toISOString()
         };

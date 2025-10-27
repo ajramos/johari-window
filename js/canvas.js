@@ -158,9 +158,9 @@ const JohariCanvas = {
             });
             
             if (adjectives.length > maxAdjectives) {
-                ctx.font = 'bold 13px sans-serif';
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-                ctx.fillText(`+${adjectives.length - maxAdjectives} más`, 
+                ctx.font = 'italic 12px sans-serif';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.fillText(`... y ${adjectives.length - maxAdjectives} más`, 
                     x + width / 2, y + 85 + (maxAdjectives * 18));
             }
         }

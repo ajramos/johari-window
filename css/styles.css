@@ -261,6 +261,22 @@ h3 {
     font-family: 'Courier New', monospace;
 }
 
+.admin-password {
+    background: #fffbeb;
+    color: #d97706;
+    padding: 18px;
+    border-radius: 8px;
+    border: 2px solid #fbbf24;
+    border-left: 4px solid #d97706;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin: 10px 0;
+    font-family: 'Courier New', monospace;
+    box-shadow: 0 2px 4px rgba(217, 119, 6, 0.1);
+}
+
 /* Navigation */
 .navigation-buttons {
     display: flex;
@@ -388,6 +404,12 @@ h3 {
     color: var(--primary-color);
 }
 
+/* Cuando todos han completado */
+.progress-header h3:has-text("Todos los participantes") {
+    color: var(--success-color);
+    font-weight: 700;
+}
+
 .refresh-indicator {
     display: flex;
     align-items: center;
@@ -447,6 +469,22 @@ h3 {
 
 .result-preview {
     margin-top: 30px;
+    text-align: center;
+}
+
+/* Admin Login Screen */
+.admin-login-screen {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+}
+
+.admin-login-screen .card {
+    padding: 30px;
+}
+
+.admin-login-screen h1 {
+    margin-bottom: 30px;
     text-align: center;
 }
 

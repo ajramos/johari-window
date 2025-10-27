@@ -175,9 +175,86 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(refreshInterval);
         });
         
+        // Register event listeners for buttons on completion screen
+        setTimeout(() => {
         const downloadBtn = document.getElementById('downloadPreview');
-        downloadBtn.addEventListener('click', async () => {
-            await JohariCanvas.downloadWindow(currentParticipant.code, false);
+        const viewAllBtn = document.getElementById('viewAllAdjectives');
+        
+        if (downloadBtn) {
+                downloadBtn.addEventListener('click', async () => {
+                    await JohariCanvas.downloadWindow(currentParticipant.code, false);
+                });
+            }
+            
+            if (viewAllBtn) {
+                viewAllBtn.addEventListener('click', async () => {
+                    await showAllAdjectives();
+                });
+            }
+        }, 100);
+    }
+    
+    // Mostrar todos los adjetivos en un modal
+    async function showAllAdjectives() {
+        const windowData = await JohariWindow.calculate(currentParticipant.code);
+        
+        if (!windowData) {
+            console.error('No windowData available');
+            return;
+        }
+        
+        // Ensure all arrays exist - use correct property names
+        const open = windowData.openArea || [];
+        const blind = windowData.blindArea || [];
+        const hidden = windowData.hiddenArea || [];
+        const unknown = windowData.unknownArea || [];
+        
+        const currentLang = i18n.currentLanguage;
+        
+        // Crear modal
+        const modal = document.createElement('div');
+        modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:10000;display:flex;align-items:center;justify-content:center;';
+        
+        const content = document.createElement('div');
+        content.style.cssText = 'background:white;padding:30px;border-radius:12px;max-width:800px;max-height:80vh;overflow-y:auto;';
+        
+        content.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                <h2>${i18n.t('participant.complete.viewAll')}</h2>
+                <button id="closeModal" style="background:#dc2626;color:white;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;">✕ ${i18n.t('participant.complete.closeModal')}</button>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px;">
+                <div style="background:#10b981;padding:15px;border-radius:8px;">
+                    <h3 style="margin:0 0 10px 0;color:white;">${i18n.t('johari.open', currentLang)} (${open.length})</h3>
+                    <div style="color:white;">${open.join(', ') || 'Ninguno'}</div>
+                </div>
+                <div style="background:#f97316;padding:15px;border-radius:8px;">
+                    <h3 style="margin:0 0 10px 0;color:white;">${i18n.t('johari.blind', currentLang)} (${blind.length})</h3>
+                    <div style="color:white;">${blind.join(', ') || 'Ninguno'}</div>
+                </div>
+                <div style="background:#3b82f6;padding:15px;border-radius:8px;">
+                    <h3 style="margin:0 0 10px 0;color:white;">${i18n.t('johari.hidden', currentLang)} (${hidden.length})</h3>
+                    <div style="color:white;">${hidden.join(', ') || 'Ninguno'}</div>
+                </div>
+                <div style="background:#6b7280;padding:15px;border-radius:8px;">
+                    <h3 style="margin:0 0 10px 0;color:white;">${i18n.t('johari.unknown', currentLang)} (${unknown.length})</h3>
+                    <div style="color:white;">${unknown.join(', ') || 'Ninguno'}</div>
+                </div>
+            </div>
+        `;
+        
+        modal.appendChild(content);
+        document.body.appendChild(modal);
+        
+        const closeBtn = document.getElementById('closeModal');
+        closeBtn.addEventListener('click', () => {
+            document.body.removeChild(modal);
+        });
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                document.body.removeChild(modal);
+            }
         });
     }
     
@@ -190,8 +267,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const progressCard = document.getElementById('progressCard');
             const progressText = document.getElementById('progressText');
             const progressList = document.getElementById('progressList');
+            const progressHeader = document.querySelector('#progressCard .progress-header');
             
-            if (!progressCard || !progressText || !progressList) return;
+            if (!progressCard || !progressText || !progressList || !progressHeader) return;
             
             const totalParticipants = session.participants.length;
             const completedParticipants = session.participants.filter(p => p.completed).length;
@@ -199,23 +277,31 @@ document.addEventListener('DOMContentLoaded', () => {
             // Actualizar texto de progreso
             const progressTemplate = i18n.t('participant.complete.progress');
             progressText.innerHTML = progressTemplate
-                .replace('<strong>X', `<strong>${completedParticipants}`)
-                .replace('Y</strong>', `${totalParticipants}</strong>`);
+                .replace('X/Y', `<strong>${completedParticipants}/${totalParticipants}</strong>`);
             
-            // Renderizar lista de participantes
-            progressList.innerHTML = '';
-            session.participants.forEach(participant => {
-                const item = document.createElement('div');
-                item.className = `progress-item-card ${participant.completed ? 'completed' : 'pending'}`;
+            // Si todos han completado, ocultar el mensaje de espera y la lista
+            if (completedParticipants === totalParticipants) {
+                if (progressHeader) {
+                    progressHeader.innerHTML = `
+                        <h3 style="color: #059669;">✓ ${i18n.t('participant.complete.allCompleted') || 'Todos los participantes han completado!'}</h3>
+                    `;
+                }
+                progressList.style.display = 'none';
+            } else {
+                // Resetear header si no todos han completado
+                if (progressHeader) {
+                    progressHeader.innerHTML = `
+                        <h3 data-i18n="participant.complete.waiting">Esperando que completen otros participantes</h3>
+                        <span class="refresh-indicator" data-i18n="participant.complete.autoRefresh">Actualizando automáticamente</span>
+                    `;
+                }
+                progressList.style.display = 'grid';
                 
-                const statusIcon = participant.completed ? '✓' : '⏳';
-                item.innerHTML = `
-                    <span class="status-icon">${statusIcon}</span>
-                    <span>${participant.name}</span>
-                `;
-                
-                progressList.appendChild(item);
-            });
+                // Renderizar lista de participantes (OCULTA por anonimato)
+                progressList.innerHTML = '';
+                // No mostrar nombres para mantener anonimato
+                // Solo mostrar el estado general
+            }
         } catch (error) {
             console.error('Error rendering progress:', error);
         }

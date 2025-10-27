@@ -95,9 +95,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         const completedParticipants = session.participants.filter(p => p.completed);
         
+        console.log('Completed participants:', completedParticipants.length);
+        
         for (const participant of completedParticipants) {
             const windowData = await JohariWindow.calculate(participant.code);
-            if (!windowData) continue;
+            if (!windowData) {
+                console.warn('No window data for participant:', participant.name);
+                continue;
+            }
+            
+            console.log('Rendering window for:', participant.name);
             
             const item = document.createElement('div');
             item.className = 'window-item';
@@ -106,10 +113,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             canvas.width = 600;
             canvas.height = 600;
             
-            if (isProportionalView) {
-                JohariCanvas.drawProportional(canvas, windowData);
-            } else {
-                JohariCanvas.drawClassic(canvas, windowData);
+            try {
+                if (isProportionalView) {
+                    console.log('Drawing proportional view');
+                    JohariCanvas.drawProportional(canvas, windowData);
+                } else {
+                    console.log('Drawing classic view');
+                    JohariCanvas.drawClassic(canvas, windowData);
+                }
+                console.log('Canvas rendered for:', participant.name);
+            } catch (error) {
+                console.error('Error drawing canvas for', participant.name, ':', error);
             }
             
             const title = document.createElement('h3');

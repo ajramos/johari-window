@@ -17,6 +17,18 @@
             </div>
         </header>
 
+        <!-- Admin Login Screen -->
+        <main class="admin-login-screen hidden" id="adminLoginScreen">
+            <h1 data-i18n="setup.loginTitle">Acceso Códigos</h1>
+            
+            <div class="card">
+                <p data-i18n="setup.loginMessage">Para ver los códigos, verifica que eres el administrador:</p>
+                <input type="password" id="adminPassword" class="code-input" placeholder="Contraseña" data-i18n-placeholder="setup.password">
+                <button class="btn-primary" id="verifyAdminBtn" data-i18n="setup.verify">Verificar</button>
+                <p class="error-message hidden" id="loginErrorMessage" data-i18n="setup.loginError">Contraseña incorrecta</p>
+            </div>
+        </main>
+
         <main class="setup-screen" id="setupScreen">
             <h1 data-i18n="setup.title">Configuración - Ventana de Johari</h1>
             
@@ -48,8 +60,12 @@
                 
                 <div class="admin-section">
                     <h3 data-i18n="codes.admin">Acceso Administrador</h3>
+                    
                     <p data-i18n="codes.adminCode">Tu código de administrador:</p>
                     <div class="admin-code" id="adminCode"></div>
+                    
+                    <p style="margin-top: 20px;"><strong>Contraseña para ver códigos:</strong></p>
+                    <div class="admin-password" id="adminPasswordDisplay"></div>
                 </div>
 
                 <button class="btn-secondary" id="copyAllCodes" data-i18n="codes.copy">Copiar todos los códigos</button>

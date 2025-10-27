@@ -15,7 +15,12 @@ const i18n = {
                 errorMinParticipants: 'Debe haber al menos 2 participantes',
                 errorDuplicate: 'Los nombres deben ser únicos',
                 newSession: 'Nueva Sesión',
-                confirmNew: '¿Iniciar una nueva sesión? Esto borrará la sesión actual.'
+                confirmNew: '¿Iniciar una nueva sesión? Esto borrará la sesión actual.',
+                loginTitle: 'Acceso Códigos',
+                loginMessage: 'Para ver los códigos, verifica que eres el administrador:',
+                password: 'Contraseña',
+                verify: 'Verificar',
+                loginError: 'Contraseña incorrecta'
             },
             codes: {
                 title: 'Códigos generados',
@@ -57,9 +62,12 @@ const i18n = {
                     message: 'Has completado todas las evaluaciones.',
                     preview: 'Vista previa de tu ventana:',
                     download: 'Descargar mi ventana',
+                    viewAll: 'Ver todos los adjetivos',
                     waiting: 'Esperando que completen otros participantes',
                     autoRefresh: 'Actualizando automáticamente',
-                    progress: 'Completado: <strong>X/Y</strong> participantes'
+                    progress: 'Completado: X/Y participantes',
+                    allCompleted: 'Todos los participantes han completado!',
+                    closeModal: 'Cerrar'
                 }
             },
             admin: {
@@ -106,7 +114,12 @@ const i18n = {
                 errorMinParticipants: 'Il doit y avoir au moins 2 participants',
                 errorDuplicate: 'Les noms doivent être uniques',
                 newSession: 'Nouvelle Session',
-                confirmNew: 'Démarrer une nouvelle session? Cela effacera la session actuelle.'
+                confirmNew: 'Démarrer une nouvelle session? Cela effacera la session actuelle.',
+                loginTitle: 'Accès Codes',
+                loginMessage: 'Pour voir les codes, vérifiez que vous êtes l\'administrateur:',
+                password: 'Mot de passe',
+                verify: 'Vérifier',
+                loginError: 'Mot de passe incorrect'
             },
             codes: {
                 title: 'Codes générés',
@@ -148,9 +161,12 @@ const i18n = {
                     message: 'Vous avez terminé toutes les évaluations.',
                     preview: 'Aperçu de votre fenêtre:',
                     download: 'Télécharger ma fenêtre',
+                    viewAll: 'Voir tous les adjectifs',
                     waiting: 'En attente que d\'autres participants terminent',
                     autoRefresh: 'Mise à jour automatique',
-                    progress: 'Terminé: <strong>X/Y</strong> participants'
+                    progress: 'Terminé: X/Y participants',
+                    allCompleted: 'Tous les participants ont terminé!',
+                    closeModal: 'Fermer'
                 }
             },
             admin: {
@@ -197,7 +213,12 @@ const i18n = {
                 errorMinParticipants: 'There must be at least 2 participants',
                 errorDuplicate: 'Names must be unique',
                 newSession: 'New Session',
-                confirmNew: 'Start a new session? This will clear the current session.'
+                confirmNew: 'Start a new session? This will clear the current session.',
+                loginTitle: 'Access Codes',
+                loginMessage: 'To view the codes, verify you are the administrator:',
+                password: 'Password',
+                verify: 'Verify',
+                loginError: 'Incorrect password'
             },
             codes: {
                 title: 'Generated Codes',
@@ -239,9 +260,12 @@ const i18n = {
                     message: 'You have completed all assessments.',
                     preview: 'Preview of your window:',
                     download: 'Download my window',
+                    viewAll: 'View all adjectives',
                     waiting: 'Waiting for other participants to complete',
                     autoRefresh: 'Auto-updating',
-                    progress: 'Completed: <strong>X/Y</strong> participants'
+                    progress: 'Completed: X/Y participants',
+                    allCompleted: 'All participants have completed!',
+                    closeModal: 'Close'
                 }
             },
             admin: {
@@ -315,8 +339,14 @@ const i18n = {
         // Actualizar placeholders con data-i18n-placeholder
         document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
             const key = element.getAttribute('data-i18n-placeholder');
-            const index = Array.from(element.parentElement.children).indexOf(element) + 1;
-            element.placeholder = this.t(key) + ' ' + index;
+            // Solo agregar índice si es un input de participante (participant-input)
+            if (element.classList.contains('participant-input')) {
+                const index = Array.from(element.parentElement.parentElement.children).indexOf(element.parentElement) + 1;
+                element.placeholder = this.t(key) + ' ' + index;
+            } else {
+                // Para otros inputs, solo usar la traducción
+                element.placeholder = this.t(key);
+            }
         });
     },
     
